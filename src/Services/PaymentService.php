@@ -241,8 +241,8 @@ class PaymentService
         ];
         // Building the customer Data
         $paymentRequestData['customer'] = [
-            'first_name'   => $billingAddress->firstName ?? $customerName['firstName'],
-            'last_name'    => $billingAddress->lastName ?? $customerName['lastName'],
+            'first_name'   => $billingAddress->firstName ? $billingAddress->firstName : $customerName['firstName'],
+            'last_name'    => $billingAddress->lastName ? $billingAddress->lastName : $customerName['lastName'],
             'gender'       => $billingAddress->gender ?? 'u',
             'email'        => $billingAddress->email,
             'customer_no'  => $customerId ?? 'guest',
@@ -830,8 +830,8 @@ class PaymentService
             'inline_form'   => (int)($this->settingsService->getPaymentSettingsValue('inline_form', $paymentKey) == true),
             'enforce_3d'    => (int)($this->settingsService->getPaymentSettingsValue('enforce', $paymentKey) == true),
             'test_mode'     => (int)($this->settingsService->getPaymentSettingsValue('test_mode', $paymentKey) == true),
-            'first_name'    => $billingAddress->firstName ?? $customerName['firstName'],
-            'last_name'     => $billingAddress->lastName ?? $customerName['lastName'],
+            'first_name'    => $billingAddress->firstName ? $billingAddress->firstName : $customerName['firstName'],
+            'last_name'     => $billingAddress->lastName ? $billingAddress->lastName : $customerName['lastName'],
             'email'         => $billingAddress->email,
             'street'        => $billingAddress->street,
             'house_no'      => $billingAddress->houseNumber,
