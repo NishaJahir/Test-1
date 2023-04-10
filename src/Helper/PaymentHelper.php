@@ -105,7 +105,6 @@ class PaymentHelper
                                 PaymentOrderRelationRepositoryContract $paymentOrderRelationRepository
                                 )
     {
-        echo "ji";die;
         $this->paymentMethodRepository          = $paymentMethodRepository;
         $this->addressRepository                = $addressRepository;
         $this->countryRepository                = $countryRepository;
@@ -356,7 +355,7 @@ class PaymentHelper
             // Execute cURL
             $paymentResponse = curl_exec($curl);
             // Handle cURL error
-            if(curl_errno($curl)) {
+            if(!curl_errno($curl)) {
                $this->getLogger(__METHOD__)->error('Novalnet::executeCurlError', curl_error($curl));
             }
             // Close cURL
