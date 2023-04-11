@@ -355,7 +355,7 @@ class PaymentHelper
             // Execute cURL
             $paymentResponse = curl_exec($curl);
             // Handle cURL error
-            if(curl_errno($curl)) {
+            if(!empty(curl_errno($curl))) {
                $this->getLogger(__METHOD__)->error('Novalnet::executeCurlError', curl_error($curl));
             }
             // Close cURL
