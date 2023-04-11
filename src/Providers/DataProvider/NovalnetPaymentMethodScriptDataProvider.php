@@ -35,13 +35,15 @@ class NovalnetPaymentMethodScriptDataProvider
             $paymentMethodIds              = [];
             $nnPaymentMethodKey = $nnPaymentMethodId = '';
             foreach($paymentMethods as $paymentMethod) {
-                if($paymentMethod instanceof PaymentMethod) {
-                    $paymentMethodIds[] = $paymentMethod->id;
-                    if($paymentMethod->paymentKey == 'NOVALNET_APPLEPAY') {
-                        $nnPaymentMethodKey = $paymentMethod->paymentKey;
-                        $nnPaymentMethodId = $paymentMethod->id;
-                    }
-                }
+				if (strpos($paymentMethod->paymentKey, 'NOVALNET') !== false) {
+					if($paymentMethod instanceof PaymentMethod) {
+						$paymentMethodIds[] = $paymentMethod->id;
+						if($paymentMethod->paymentKey == 'NOVALNET_APPLEPAY') {
+							$nnPaymentMethodKey = $paymentMethod->paymentKey;
+							$nnPaymentMethodId = $paymentMethod->id;
+						}
+					}
+				}
             }
         }
         return $twig->render('Novalnet::NovalnetPaymentMethodScriptDataProvider',
