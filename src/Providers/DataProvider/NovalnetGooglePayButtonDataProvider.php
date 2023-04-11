@@ -81,8 +81,10 @@ class NovalnetGooglePayButtonDataProvider
                             'buttonHeight'  => $settingsService->getPaymentSettingsValue('button_height', 'novalnet_googlepay'),
                             'testMode'      => ($settingsService->getPaymentSettingsValue('test_mode', 'novalnet_googlepay') == true) ? 'SANDBOX' : 'PRODUCTION'
                          ];
-        // Render the Google Pay button
-       return $twig->render('Novalnet::PaymentForm.NovalnetGooglePayButton',
+       // Render the Google Pay button
+       
+       if (strpos($paymentMethodDetails[1], 'NOVALNET') !== false) {
+			return $twig->render('Novalnet::PaymentForm.NovalnetGooglePayButton',
                                     [
                                         'paymentMethodId'       => $paymentMethodDetails[0],
                                         'googlePayData'         => $googlePayData,
@@ -92,5 +94,9 @@ class NovalnetGooglePayButtonDataProvider
                                         'orderCurrency'         => $basket->currency,
                                         'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl()
                                     ]);
+		} else
+			return '';
+		}
+		
     }
 }
