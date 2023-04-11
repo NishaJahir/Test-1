@@ -48,55 +48,67 @@ class NovalnetOrderConfirmationDataProvider
             // Loads the payments for an order
             $payments = $paymentRepositoryContract->getPaymentsByOrderId($order['id']);
             foreach($payments as $payment) {
-                // Check it is Novalnet Payment method order
-                if($paymentHelper->getPaymentKeyByMop($payment->mopId)) {
+				// Check Novalnet payment
+				if (strpos($payment->method['paymentKey'], 'NOVALNET') !== false) {
+					
+					// Check it is Novalnet Payment method order
+					if($paymentHelper->getPaymentKeyByMop($payment->mopId)) {
 
-                    // Load the order property and get the required details
-                    $orderProperties = $payment->properties;
-                    foreach($orderProperties as $orderProperty) {
-                        if($orderProperty->typeId == 21) { // Loads the bank details from the payment object for previous payment plugin versions
-                            $invoiceDetails = $orderProperty->value;
-                        }
-                        if($orderProperty->typeId == 30) { // Load the transaction status
-                            $txStatus = $orderProperty->value;
-                        }
-                        if($orderProperty->typeId == 22) { // Loads the cashpayment comments from the payment object for previous payment plugin versions
-                            $cashpaymentComments = $orderProperty->value;
-                        }
-                    }
+						// Load the order property and get the required details
+						$orderProperties = $payment->properties;
+						foreach($orderProperties as $orderProperty) {
+							if($orderProperty->typeId == 21) { // Loads the bank details from the payment object for previous payment plugin versions
+								$invoiceDetails = $orderProperty->value;
+							}
+							if($orderProperty->typeId == 30) { // Load the transaction status
+								$txStatus = $orderProperty->value;
+							}
+							if($orderProperty->typeId == 22) { // Loads the cashpayment comments from the payment object for previous payment plugin versions
+								$cashpaymentComments = $orderProperty->value;
+							}
+						}
+							
+						// Get the cashpayment token and checkout URL
+						if($payment->method['paymentKey'] == 'NOVALNET_CASHPAYMENT') {
+							$cashpaymentToken = html_entity_decode((string)$sessionStorage->getPlugin()->getValue('novalnetCheckoutToken'));
+							$cashpaymentUrl = html_entity_decode((string)$sessionStorage->getPlugin()->getValue('novalnetCheckoutUrl'));
+						}
 
-                    // Get the cashpayment token and checkout URL
-                    if($payment->method['paymentKey'] == 'NOVALNET_CASHPAYMENT') {
-                        $cashpaymentToken = html_entity_decode((string)$sessionStorage->getPlugin()->getValue('novalnetCheckoutToken'));
-                        $cashpaymentUrl = html_entity_decode((string)$sessionStorage->getPlugin()->getValue('novalnetCheckoutUrl'));
-                    }
+						// Get Novalnet transaction details from the Novalnet database table
+						$nnDbTxDetails = $paymentService->getDatabaseValues($order['id']);
 
-                    // Get Novalnet transaction details from the Novalnet database table
-                    $nnDbTxDetails = $paymentService->getDatabaseValues($order['id']);
+						// Get the transaction status as string for the previous payment plugin version
+						$nnDbTxDetails['tx_status'] = $paymentService->getTxStatusAsString($txStatus, $nnDbTxDetails['payment_id']);
 
-                    // Get the transaction status as string for the previous payment plugin version
-                    $nnDbTxDetails['tx_status'] = $paymentService->getTxStatusAsString($txStatus, $nnDbTxDetails['payment_id']);
+						// Set the cashpayment comments into array
+						$nnDbTxDetails['cashpayment_comments'] = $cashpaymentComments ?? '';
 
-                    // Set the cashpayment comments into array
-                    $nnDbTxDetails['cashpayment_comments'] = $cashpaymentComments ?? '';
-
-                    // Form the Novalnet transaction comments
-                    $transactionComments = $paymentService->formTransactionComments($nnDbTxDetails);
-                }
+						// Form the Novalnet transaction comments
+						$transactionComments = $paymentService->formTransactionComments($nnDbTxDetails);
+					}
+                
+				}
             }
             $transactionComment .= (string) $transactionComments;
         }
 
         // Replace PHP_EOL as break tag for the alignment
         $transactionComment = str_replace(PHP_EOL, '<br>', $transactionComment);
-
+		
+		
         // Render the transaction comments
         return $twig->render('Novalnet::NovalnetOrderConfirmationDataProvider',
                                     [
                                         'transactionComments' => html_entity_decode($transactionComment),
                                         'cashpaymentToken' => $cashpaymentToken,
                                         'cashpaymentUrl' => $cashpaymentUrl,
-                                        'txStatus' => $nnDbTxDetails['tx_status']
+                                        'txStatus' => ($nnDbTxDetails['tx_status']) ? $nnDbTxDetails['tx_status'] : ''
                                     ]);
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
     }
 }
