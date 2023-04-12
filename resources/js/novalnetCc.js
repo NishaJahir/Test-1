@@ -1,4 +1,4 @@
-jQuery(window).load(function() {
+jQuery(window).load(function(e) {
     loadCardForm();
     jQuery('#nn_cc_form').submit( function (e) {
         jQuery('#novalnet_form_btn').prop('disabled', true);
