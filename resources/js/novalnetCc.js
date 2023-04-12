@@ -1,4 +1,4 @@
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", (event) => {
     loadCardForm();
     jQuery('#nn_cc_form').submit( function (e) {
         jQuery('#novalnet_form_btn').prop('disabled', true);
