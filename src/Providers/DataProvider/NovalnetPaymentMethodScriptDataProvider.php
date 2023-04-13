@@ -48,12 +48,13 @@ class NovalnetPaymentMethodScriptDataProvider
 					}
 				}
             }
-        }
-        return $twig->render('Novalnet::NovalnetPaymentMethodScriptDataProvider',
+	 return $twig->render('Novalnet::NovalnetPaymentMethodScriptDataProvider',
                                     [
                                         'paymentMethodIds'      => $paymentMethodIds,
                                         'nnPaymentMethodKey'    => $nnPaymentMethodKey,
                                         'nnPaymentMethodId'     => $nnPaymentMethodId
-                                    ]);
+                                    ]);	
+        }
+        return '';
     }
 }
