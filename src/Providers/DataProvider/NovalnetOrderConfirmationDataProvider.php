@@ -97,17 +97,19 @@ class NovalnetOrderConfirmationDataProvider
         // Replace PHP_EOL as break tag for the alignment
         $transactionComment = str_replace(PHP_EOL, '<br>', $transactionComment);
 		
-		
+	if(!empty($nnDbTxDetails['tx_status']))	{
         // Render the transaction comments
         return $twig->render('Novalnet::NovalnetOrderConfirmationDataProvider',
                                     [
                                         'transactionComments' => html_entity_decode($transactionComment),
                                         'cashpaymentToken' => $cashpaymentToken,
                                         'cashpaymentUrl' => $cashpaymentUrl,
-                                        'txStatus' => ($nnDbTxDetails['tx_status']) ? $nnDbTxDetails['tx_status'] : ''
+                                        'txStatus' => $nnDbTxDetails['tx_status']
                                     ]);
                                     
-                                    
+	} else {
+	 return '';	
+	}
                                     
                                     
                                     
