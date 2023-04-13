@@ -1,4 +1,9 @@
-window.addEventListener("DOMContentLoaded", (event) => {
+jQuery(document).ready(function () {
+  var script = document.createElement('script');
+  script.setAttribute('type', 'text/javascript');
+  script.setAttribute('src', 'https://cdn.novalnet.de/js/v2/NovalnetUtility.js'); 
+  document.head.appendChild(script);
+  script.addEventListener("load", function(event) {
     loadCardForm();
     jQuery('#nn_cc_form').submit( function (e) {
         jQuery('#novalnet_form_btn').prop('disabled', true);
@@ -8,6 +13,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
             e.stopImmediatePropagation();
         }
      });
+ });  
+ 
 });
 
 function loadCardForm() {
