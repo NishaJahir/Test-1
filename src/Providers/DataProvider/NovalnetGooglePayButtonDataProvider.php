@@ -44,6 +44,7 @@ class NovalnetGooglePayButtonDataProvider
                          WebstoreHelper $webstoreHelper,
                          $arg)
     {
+	$order = $arg[0];
         $basket             = $basketRepository->load();
         $paymentHelper      = pluginApp(PaymentHelper::class);
         $sessionStorage     = pluginApp(FrontendSessionStorageFactoryContract::class);
@@ -51,6 +52,15 @@ class NovalnetGooglePayButtonDataProvider
         $settingsService    = pluginApp(SettingsService::class);
 
         $orderAmount = 0; 
+	
+	foreach($order['properties'] as $orderProperty) {
+            if($orderProperty['typeId'] == 3)
+            {
+                $mopId = $orderProperty['value'];
+            }
+	}
+        
+        $paymentKey = $paymentHelper->getPaymentKeyByMop($mopId);    
         if(!empty($basket->basketAmount)) {
             /** @var \Plenty\Modules\Frontend\Services\VatService $vatService */
             $vatService = pluginApp(\Plenty\Modules\Frontend\Services\VatService::class);
@@ -85,7 +95,7 @@ class NovalnetGooglePayButtonDataProvider
                          ];
        // Render the Google Pay button
 	   
-       if (strpos($paymentMethodDetails[1], 'NOVALNET_GOOGLEPAY') !== false) {
+       if (strpos($paymentKey, 'NOVALNET_GOOGLEPAY') !== false) {
 		   $this->getLogger(__METHOD__)->error('Novalnet::Payment', $paymentMethodDetails[1]);
 			return $twig->render('Novalnet::PaymentForm.NovalnetGooglePayButton',
                                     [
