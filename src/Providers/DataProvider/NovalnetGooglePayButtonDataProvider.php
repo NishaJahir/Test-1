@@ -26,7 +26,7 @@ use Plenty\Plugin\Log\Loggable;
  */
 class NovalnetGooglePayButtonDataProvider
 {
-    use Loggable;
+	use Loggable;
     /**
      * Display the Google Pay button
      *
@@ -44,25 +44,13 @@ class NovalnetGooglePayButtonDataProvider
                          WebstoreHelper $webstoreHelper,
                          $arg)
     {
-	$order = $arg[0];
         $basket             = $basketRepository->load();
         $paymentHelper      = pluginApp(PaymentHelper::class);
         $sessionStorage     = pluginApp(FrontendSessionStorageFactoryContract::class);
         $paymentService     = pluginApp(PaymentService::class);
         $settingsService    = pluginApp(SettingsService::class);
 
-        $orderAmount = 0;
-        
-	foreach($order['properties'] as $orderProperty) {
-            if($orderProperty['typeId'] == 3)
-            {
-                $mopId = $orderProperty['value'];
-            }
-        }
-	    
-        $paymentKey = $paymentHelper->getPaymentKeyByMop($mopId);
-        if (strpos($paymentKey, 'NOVALNET') !== false) {
-	$this->getLogger(__METHOD__)->error('Novalnet::Payment', $paymentKey);
+        $orderAmount = 0; 
         if(!empty($basket->basketAmount)) {
             /** @var \Plenty\Modules\Frontend\Services\VatService $vatService */
             $vatService = pluginApp(\Plenty\Modules\Frontend\Services\VatService::class);
@@ -96,7 +84,10 @@ class NovalnetGooglePayButtonDataProvider
                             'testMode'      => ($settingsService->getPaymentSettingsValue('test_mode', 'novalnet_googlepay') == true) ? 'SANDBOX' : 'PRODUCTION'
                          ];
        // Render the Google Pay button
-	   return $twig->render('Novalnet::PaymentForm.NovalnetGooglePayButton',
+	   
+       if (strpos($paymentMethodDetails[1], 'NOVALNET') !== false) {
+		   $this->getLogger(__METHOD__)->error('Novalnet::Payment', $paymentMethodDetails[1]);
+			return $twig->render('Novalnet::PaymentForm.NovalnetGooglePayButton',
                                     [
                                         'paymentMethodId'       => $paymentMethodDetails[0],
                                         'googlePayData'         => $googlePayData,
@@ -106,11 +97,10 @@ class NovalnetGooglePayButtonDataProvider
                                         'orderCurrency'         => $basket->currency,
                                         'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl()
                                     ]);
-		}
-		else {
+		} else {
 			return '';
 		}
-	}
 		
- }
+    }
 
+}
