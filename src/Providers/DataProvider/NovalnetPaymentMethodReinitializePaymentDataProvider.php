@@ -15,6 +15,7 @@ use Plenty\Modules\Frontend\Session\Storage\Contracts\FrontendSessionStorageFact
 use Novalnet\Helper\PaymentHelper;
 use Novalnet\Services\SettingsService;
 use Plenty\Modules\Helper\Services\WebstoreHelper;
+use Plenty\Plugin\Log\Loggable;
 
 /**
  * Class NovalnetPaymentMethodReinitializePaymentDataProvider
@@ -23,6 +24,8 @@ use Plenty\Modules\Helper\Services\WebstoreHelper;
  */
 class NovalnetPaymentMethodReinitializePaymentDataProvider
 {
+    use Loggable;
+	
     /**
      * Display the reinitiate payment button
      *
@@ -53,6 +56,7 @@ class NovalnetPaymentMethodReinitializePaymentDataProvider
         // Build the payment request paramters
         if(!empty($basketRepository->load())) { 
 			if (strpos($paymentKey, 'NOVALNET') !== false) {
+				$this->getLogger(__METHOD__)->error('Novalnet::Payment', $paymentKey);
 				// Assign the billing and shipping address Id
 				$basketRepository->load()->customerInvoiceAddressId = !empty($basketRepository->load()->customerInvoiceAddressId) ? $basketRepository->load()->customerInvoiceAddressId : $order['billingAddress']['id'];
 				$basketRepository->load()->customerShippingAddressId = !empty($basketRepository->load()->customerShippingAddressId) ? $basketRepository->load()->customerShippingAddressId : $order['deliveryAddress']['id'];
