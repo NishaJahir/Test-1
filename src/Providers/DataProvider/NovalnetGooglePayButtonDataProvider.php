@@ -52,15 +52,8 @@ class NovalnetGooglePayButtonDataProvider
         $settingsService    = pluginApp(SettingsService::class);
 
         $orderAmount = 0; 
-	
-	foreach($order['properties'] as $orderProperty) {
-            if($orderProperty['typeId'] == 3)
-            {
-                $mopId = $orderProperty['value'];
-            }
-	}
         
-        $paymentKey = $paymentHelper->getPaymentKeyByMop($mopId);    
+		if($settingsService->getPaymentSettingsValue('payment_active', 'novalnet_googlepay') == true) {
         if(!empty($basket->basketAmount)) {
             /** @var \Plenty\Modules\Frontend\Services\VatService $vatService */
             $vatService = pluginApp(\Plenty\Modules\Frontend\Services\VatService::class);
@@ -83,7 +76,6 @@ class NovalnetGooglePayButtonDataProvider
         // Get the seller name from the shop configuaration
         $sellerName = $settingsService->getPaymentSettingsValue('business_name', 'novalnet_googlepay');
         // Required details for the Google Pay button
-	if($paymentKey == 'NOVALNET_GOOGLEPAY') {    
         $googlePayData = [
                             'clientKey'     => trim($settingsService->getPaymentSettingsValue('novalnet_client_key')),
                             'merchantId'    => $settingsService->getPaymentSettingsValue('payment_active', 'novalnet_googlepay'),
@@ -94,13 +86,10 @@ class NovalnetGooglePayButtonDataProvider
                             'buttonHeight'  => $settingsService->getPaymentSettingsValue('button_height', 'novalnet_googlepay'),
                             'testMode'      => ($settingsService->getPaymentSettingsValue('test_mode', 'novalnet_googlepay') == true) ? 'SANDBOX' : 'PRODUCTION'
                          ];
-	}
-	else {
-	$googlePayData = '';
-	}
+		}
+		
        // Render the Google Pay button
-	   
-       if (strpos($paymentMethodDetails[1], 'NOVALNET_GOOGLEPAY') !== false && (!empty($googlePayData)) && ($settingsService->getPaymentSettingsValue('payment_active', 'novalnet_googlepay') == true)) {
+	   if (strpos($paymentMethodDetails[1], 'NOVALNET_GOOGLEPAY') !== false  && isset($googlePayData) && ($settingsService->getPaymentSettingsValue('payment_active', 'novalnet_googlepay') == true)) {
 		   $this->getLogger(__METHOD__)->error('Novalnet::Payment', $paymentMethodDetails[1]);
 			return $twig->render('Novalnet::PaymentForm.NovalnetGooglePayButton',
                                     [
@@ -117,5 +106,7 @@ class NovalnetGooglePayButtonDataProvider
 		}
 		
     }
+
+}
 
 }
