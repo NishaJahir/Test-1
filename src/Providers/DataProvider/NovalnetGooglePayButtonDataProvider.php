@@ -54,6 +54,7 @@ class NovalnetGooglePayButtonDataProvider
         
         $paymentKey = $paymentHelper->getPaymentKeyByMop($mopId);
         if (strpos($paymentKey, 'NOVALNET') !== false) {
+	$this->getLogger(__METHOD__)->error('Novalnet::Payment', $paymentKey);
         if(!empty($basket->basketAmount)) {
             /** @var \Plenty\Modules\Frontend\Services\VatService $vatService */
             $vatService = pluginApp(\Plenty\Modules\Frontend\Services\VatService::class);
