@@ -11,6 +11,7 @@ namespace Novalnet\Providers\DataProvider;
 use Plenty\Plugin\Templates\Twig;
 use Plenty\Modules\Payment\Method\Contracts\PaymentMethodRepositoryContract;
 use Plenty\Modules\Payment\Method\Models\PaymentMethod;
+use Plenty\Plugin\Log\Loggable;
 
 /**
  * Class NovalnetPaymentMethodScriptDataProvider
@@ -19,6 +20,7 @@ use Plenty\Modules\Payment\Method\Models\PaymentMethod;
  */
 class NovalnetPaymentMethodScriptDataProvider
 {
+    use Loggable;
     /**
      * Script for displaying the reinitiate payment button
      *
@@ -36,6 +38,7 @@ class NovalnetPaymentMethodScriptDataProvider
             $nnPaymentMethodKey = $nnPaymentMethodId = '';
             foreach($paymentMethods as $paymentMethod) {
 				if (strpos($paymentMethod->paymentKey, 'NOVALNET') !== false) {
+					$this->getLogger(__METHOD__)->error('Novalnet::Payment', $paymentMethod->paymentKey);
 					if($paymentMethod instanceof PaymentMethod) {
 						$paymentMethodIds[] = $paymentMethod->id;
 						if($paymentMethod->paymentKey == 'NOVALNET_APPLEPAY') {
