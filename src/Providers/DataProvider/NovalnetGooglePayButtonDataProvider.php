@@ -44,6 +44,7 @@ class NovalnetGooglePayButtonDataProvider
                          WebstoreHelper $webstoreHelper,
                          $arg)
     {
+	$order = $arg[0];
         $basket             = $basketRepository->load();
         $paymentHelper      = pluginApp(PaymentHelper::class);
         $sessionStorage     = pluginApp(FrontendSessionStorageFactoryContract::class);
@@ -52,6 +53,13 @@ class NovalnetGooglePayButtonDataProvider
 
         $orderAmount = 0;
         
+	foreach($order['properties'] as $orderProperty) {
+            if($orderProperty['typeId'] == 3)
+            {
+                $mopId = $orderProperty['value'];
+            }
+        }
+	    
         $paymentKey = $paymentHelper->getPaymentKeyByMop($mopId);
         if (strpos($paymentKey, 'NOVALNET') !== false) {
 	$this->getLogger(__METHOD__)->error('Novalnet::Payment', $paymentKey);
