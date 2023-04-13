@@ -95,7 +95,7 @@ class NovalnetGooglePayButtonDataProvider
                          ];
        // Render the Google Pay button
 	   
-       if (strpos($paymentKey, 'NOVALNET_GOOGLEPAY') !== false) {
+       if (strpos($paymentKey, 'NOVALNET_GOOGLEPAY') !== false && ($settingsService->getPaymentSettingsValue('payment_active', 'novalnet_googlepay') == true)) {
 		   $this->getLogger(__METHOD__)->error('Novalnet::Payment', $paymentMethodDetails[1]);
 			return $twig->render('Novalnet::PaymentForm.NovalnetGooglePayButton',
                                     [
