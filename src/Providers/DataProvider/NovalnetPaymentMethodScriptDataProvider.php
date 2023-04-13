@@ -55,6 +55,8 @@ class NovalnetPaymentMethodScriptDataProvider
                                         'nnPaymentMethodId'     => $nnPaymentMethodId
                                     ]);	
         }
+	else {
         return '';
+	}
     }
 }
