@@ -50,7 +50,7 @@ class NovalnetOrderConfirmationDataProvider
             foreach($payments as $payment) {
 				// Check Novalnet payment
 				if (strpos($payment->method['paymentKey'], 'NOVALNET') !== false) {
-					
+					$this->getLogger(__METHOD__)->error('Novalnet::Payment', $payment->method['paymentKey']);
 					// Check it is Novalnet Payment method order
 					if($paymentHelper->getPaymentKeyByMop($payment->mopId)) {
 
