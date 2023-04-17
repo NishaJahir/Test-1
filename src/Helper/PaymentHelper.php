@@ -577,7 +577,7 @@ class PaymentHelper
     }
     
     
-	public logger($key, $value) {
+    public function logger($key, $value) {
 		$this->getLogger(__METHOD__)->error('order details', $order);
 	}	
 }
