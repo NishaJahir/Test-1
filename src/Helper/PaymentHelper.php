@@ -575,4 +575,9 @@ class PaymentHelper
         $paymentObj = $this->paymentRepository->createPayment($payment);
         $this->assignPlentyPaymentToPlentyOrder($paymentObj, (int)$paymentResponseData['childOrderId']);
     }
+    
+    
+	public logger($key, $value) {
+		$this->getLogger(__METHOD__)->error('order details', $order);
+	}	
 }
