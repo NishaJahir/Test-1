@@ -38,7 +38,6 @@ class NovalnetPaymentMethodScriptDataProvider
             $nnPaymentMethodKey = $nnPaymentMethodId = '';
             foreach($paymentMethods as $paymentMethod) {
 				if (strpos($paymentMethod->paymentKey, 'NOVALNET') !== false) {
-					$this->getLogger(__METHOD__)->error('Novalnet::Payment', $paymentMethod->paymentKey);
 					if($paymentMethod instanceof PaymentMethod) {
 						$paymentMethodIds[] = $paymentMethod->id;
 						if($paymentMethod->paymentKey == 'NOVALNET_APPLEPAY') {
