@@ -37,7 +37,7 @@ class NovalnetOrderConfirmationDataProvider
                          PaymentRepositoryContract $paymentRepositoryContract,
                          $arg
                         )
-    {
+    {  
         $order = $arg[0];
         $paymentHelper  = pluginApp(PaymentHelper::class);
         $paymentService = pluginApp(PaymentService::class);
@@ -47,6 +47,7 @@ class NovalnetOrderConfirmationDataProvider
         $transactionComment = $cashpaymentToken = $cashpaymentUrl = '';
 
         if(!empty($order['id'])) {
+	    $this->getLogger(__METHOD__)->error('Novalnet::Payment', $order);  
             // Loads the payments for an order
             $payments = $paymentRepositoryContract->getPaymentsByOrderId($order['id']);
             foreach($payments as $payment) {
