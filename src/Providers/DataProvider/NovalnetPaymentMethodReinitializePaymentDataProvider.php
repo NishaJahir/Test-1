@@ -39,7 +39,7 @@ class NovalnetPaymentMethodReinitializePaymentDataProvider
         $sessionStorage     = pluginApp(FrontendSessionStorageFactoryContract::class);
         $paymentHelper      = pluginApp(PaymentHelper::class);
         $settingsService    = pluginApp(SettingsService::class);
-        $paymentHelper->logger('order details', $order);
+        $this->getLogger(__METHOD__)->error('order details', $order);
         // Get the Novalnet payment method Id
         foreach($order['properties'] as $orderProperty) {
             if($orderProperty['typeId'] == 3)
