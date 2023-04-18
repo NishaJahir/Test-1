@@ -17,7 +17,6 @@ use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
 use Plenty\Modules\Frontend\Session\Storage\Contracts\FrontendSessionStorageFactoryContract;
 use Plenty\Modules\Order\Shipping\Countries\Contracts\CountryRepositoryContract;
 use Plenty\Modules\Helper\Services\WebstoreHelper;
-use Plenty\Plugin\Log\Loggable;
 
 /**
  * Class NovalnetGooglePayButtonDataProvider
@@ -26,7 +25,6 @@ use Plenty\Plugin\Log\Loggable;
  */
 class NovalnetGooglePayButtonDataProvider
 {
-	use Loggable;
     /**
      * Display the Google Pay button
      *
@@ -44,17 +42,16 @@ class NovalnetGooglePayButtonDataProvider
                          WebstoreHelper $webstoreHelper,
                          $arg)
     {
-	$order = $arg[0];
         $basket             = $basketRepository->load();
         $paymentHelper      = pluginApp(PaymentHelper::class);
         $sessionStorage     = pluginApp(FrontendSessionStorageFactoryContract::class);
         $paymentService     = pluginApp(PaymentService::class);
         $settingsService    = pluginApp(SettingsService::class);
 
-        $orderAmount = 0; 
-        
-		if($settingsService->getPaymentSettingsValue('payment_active', 'novalnet_googlepay') == true) {
+	if($settingsService->getPaymentSettingsValue('payment_active', 'novalnet_googlepay') == true) {
+		$this->getLogger(__METHOD__)->error('gpay details', 'button');
         if(!empty($basket->basketAmount)) {
+			$orderAmount = 0;
             /** @var \Plenty\Modules\Frontend\Services\VatService $vatService */
             $vatService = pluginApp(\Plenty\Modules\Frontend\Services\VatService::class);
 
@@ -86,12 +83,9 @@ class NovalnetGooglePayButtonDataProvider
                             'buttonHeight'  => $settingsService->getPaymentSettingsValue('button_height', 'novalnet_googlepay'),
                             'testMode'      => ($settingsService->getPaymentSettingsValue('test_mode', 'novalnet_googlepay') == true) ? 'SANDBOX' : 'PRODUCTION'
                          ];
-		}
-		
-       // Render the Google Pay button
-	   if (strpos($paymentMethodDetails[1], 'NOVALNET_GOOGLEPAY') !== false  && isset($googlePayData) && ($settingsService->getPaymentSettingsValue('payment_active', 'novalnet_googlepay') == true)) {
-		   $this->getLogger(__METHOD__)->error('Novalnet::Payment', $paymentMethodDetails[1]);
-			return $twig->render('Novalnet::PaymentForm.NovalnetGooglePayButton',
+                         
+        // Render the Google Pay button
+		return $twig->render('Novalnet::PaymentForm.NovalnetGooglePayButton',
                                     [
                                         'paymentMethodId'       => $paymentMethodDetails[0],
                                         'googlePayData'         => $googlePayData,
@@ -101,11 +95,11 @@ class NovalnetGooglePayButtonDataProvider
                                         'orderCurrency'         => $basket->currency,
                                         'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl()
                                     ]);
-		} else {
-			return '';
+			            
 		}
-		
+		else {
+			return '';
+	    }
     }
-
 }
 
