@@ -14,7 +14,6 @@ use Novalnet\Helper\PaymentHelper;
 use Novalnet\Services\PaymentService;
 use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
 use Plenty\Modules\Frontend\Session\Storage\Contracts\FrontendSessionStorageFactoryContract;
-use Plenty\Plugin\Log\Loggable;
 
 /**
  * Class NovalnetOrderConfirmationDataProvider
@@ -23,7 +22,6 @@ use Plenty\Plugin\Log\Loggable;
  */
 class NovalnetOrderConfirmationDataProvider
 {
-    use Loggable;
     /**
      * Displaying transaction comments in the order confirmation page
      *
@@ -37,7 +35,7 @@ class NovalnetOrderConfirmationDataProvider
                          PaymentRepositoryContract $paymentRepositoryContract,
                          $arg
                         )
-    {  
+    {
         $order = $arg[0];
         $paymentHelper  = pluginApp(PaymentHelper::class);
         $paymentService = pluginApp(PaymentService::class);
@@ -47,16 +45,14 @@ class NovalnetOrderConfirmationDataProvider
         $transactionComment = $cashpaymentToken = $cashpaymentUrl = '';
 
         if(!empty($order['id'])) {
-	    $this->getLogger(__METHOD__)->error('Novalnet::Payment', $order);  
             // Loads the payments for an order
             $payments = $paymentRepositoryContract->getPaymentsByOrderId($order['id']);
             foreach($payments as $payment) {
 				// Check Novalnet payment
 				if (strpos($payment->method['paymentKey'], 'NOVALNET') !== false) {
-					$this->getLogger(__METHOD__)->error('Novalnet::Payment', $payment->method['paymentKey']);
+					$this->getLogger(__METHOD__)->error('confirmation details', $payment->method['paymentKey']);
 					// Check it is Novalnet Payment method order
 					if($paymentHelper->getPaymentKeyByMop($payment->mopId)) {
-
 						// Load the order property and get the required details
 						$orderProperties = $payment->properties;
 						foreach($orderProperties as $orderProperty) {
@@ -89,31 +85,26 @@ class NovalnetOrderConfirmationDataProvider
 						// Form the Novalnet transaction comments
 						$transactionComments = $paymentService->formTransactionComments($nnDbTxDetails);
 					}
-                
+				} else {
+					return '';
 				}
             }
-            $transactionComment .= (string) $transactionComments;
+				$transactionComment .= (string) $transactionComments;  
+				// Replace PHP_EOL as break tag for the alignment
+				$transactionComment = str_replace(PHP_EOL, '<br>', $transactionComment);
+				// Render the transaction comments
+				return $twig->render('Novalnet::NovalnetOrderConfirmationDataProvider',
+										[
+											'transactionComments' => html_entity_decode($transactionComment),
+											'cashpaymentToken' => $cashpaymentToken,
+											'cashpaymentUrl' => $cashpaymentUrl,
+											'txStatus' => $nnDbTxDetails['tx_status']
+										]);		
         }
-
-        // Replace PHP_EOL as break tag for the alignment
-        $transactionComment = str_replace(PHP_EOL, '<br>', $transactionComment);
-		
-	if(!empty($nnDbTxDetails['tx_status']))	{
-        // Render the transaction comments
-        return $twig->render('Novalnet::NovalnetOrderConfirmationDataProvider',
-                                    [
-                                        'transactionComments' => html_entity_decode($transactionComment),
-                                        'cashpaymentToken' => $cashpaymentToken,
-                                        'cashpaymentUrl' => $cashpaymentUrl,
-                                        'txStatus' => $nnDbTxDetails['tx_status']
-                                    ]);
-                                    
-	} else {
-	 return '';	
-	}
-                                    
-                                    
-                                    
-                                    
+		else {
+			return '';
+		}
+						
+		                                                          
     }
 }
