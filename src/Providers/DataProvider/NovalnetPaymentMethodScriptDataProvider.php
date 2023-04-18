@@ -11,7 +11,6 @@ namespace Novalnet\Providers\DataProvider;
 use Plenty\Plugin\Templates\Twig;
 use Plenty\Modules\Payment\Method\Contracts\PaymentMethodRepositoryContract;
 use Plenty\Modules\Payment\Method\Models\PaymentMethod;
-use Plenty\Plugin\Log\Loggable;
 
 /**
  * Class NovalnetPaymentMethodScriptDataProvider
@@ -20,42 +19,40 @@ use Plenty\Plugin\Log\Loggable;
  */
 class NovalnetPaymentMethodScriptDataProvider
 {
-    use Loggable;
-    /**
-     * Script for displaying the reinitiate payment button
-     *
-     * @param Twig $twig
-     *
-     * @return string
-     */
-    public function call(Twig $twig)
-    {
-        // Load the all Novalnet payment methods
-        $paymentMethodRepository = pluginApp(PaymentMethodRepositoryContract::class);
-        $paymentMethods          = $paymentMethodRepository->allForPlugin('plenty_novalnet');
-        if(!is_null($paymentMethods)) {
-            $paymentMethodIds              = [];
-            $nnPaymentMethodKey = $nnPaymentMethodId = '';
-            foreach($paymentMethods as $paymentMethod) {
-				if (strpos($paymentMethod->paymentKey, 'NOVALNET') !== false) {
-					if($paymentMethod instanceof PaymentMethod) {
-						$paymentMethodIds[] = $paymentMethod->id;
-						if($paymentMethod->paymentKey == 'NOVALNET_APPLEPAY') {
-							$nnPaymentMethodKey = $paymentMethod->paymentKey;
-							$nnPaymentMethodId = $paymentMethod->id;
-						}
+
+	/**
+	 * Script for displaying the reinitiate payment button
+	 *
+	 * @param Twig $twig
+	 *
+	 * @return string
+	 */
+	public function call(Twig $twig)
+	{
+		// Load the all Novalnet payment methods
+		$paymentMethodRepository = pluginApp(PaymentMethodRepositoryContract::class);
+		$paymentMethods          = $paymentMethodRepository->allForPlugin('plenty_novalnet');
+		if(!is_null($paymentMethods)) {
+			$paymentMethodIds              = [];
+			$nnPaymentMethodKey = $nnPaymentMethodId = '';
+			foreach($paymentMethods as $paymentMethod) {
+				if($paymentMethod instanceof PaymentMethod) {
+					$paymentMethodIds[] = $paymentMethod->id;
+					if($paymentMethod->paymentKey == 'NOVALNET_APPLEPAY') {
+						$nnPaymentMethodKey = $paymentMethod->paymentKey;
+						$nnPaymentMethodId = $paymentMethod->id;
 					}
 				}
-            }
-	 return $twig->render('Novalnet::NovalnetPaymentMethodScriptDataProvider',
-                                    [
-                                        'paymentMethodIds'      => $paymentMethodIds,
-                                        'nnPaymentMethodKey'    => $nnPaymentMethodKey,
-                                        'nnPaymentMethodId'     => $nnPaymentMethodId
-                                    ]);	
-        }
-	else {
-        return '';
+			}
+			return $twig->render('Novalnet::NovalnetPaymentMethodScriptDataProvider',
+									[
+										'paymentMethodIds'      => $paymentMethodIds,
+										'nnPaymentMethodKey'    => $nnPaymentMethodKey,
+										'nnPaymentMethodId'     => $nnPaymentMethodId
+									]);
+		}
+		else {
+			return '';
+		}
 	}
-    }
 }
