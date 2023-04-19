@@ -474,6 +474,7 @@ class PaymentService
             // Set the payment response in the session for the further processings
             $this->sessionStorage->getPlugin()->setValue('nnPaymentData', $paymentRequestData['paymentRequestData']);
             return $paymentResponseData;
+            $this->getLogger(__METHOD__)->error('direct_response', $paymentResponseData);
         } else {
             // Push notification to customer regarding the payment response
             if($isPaymentSuccess) {
