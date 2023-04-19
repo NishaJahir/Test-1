@@ -473,8 +473,8 @@ class PaymentService
         if($this->isRedirectPayment($paymentKey) || !empty($nnDoRedirect) || (!empty($nnGooglePayDoRedirect) && (string) $nnGooglePayDoRedirect === 'true')) {
             // Set the payment response in the session for the further processings
             $this->sessionStorage->getPlugin()->setValue('nnPaymentData', $paymentRequestData['paymentRequestData']);
-            return $paymentResponseData;
             $this->getLogger(__METHOD__)->error('redirect_response', $paymentResponseData);
+            return $paymentResponseData;
         } else {
             // Push notification to customer regarding the payment response
             if($isPaymentSuccess) {
