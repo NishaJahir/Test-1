@@ -29,7 +29,6 @@ jQuery(document).ready(function() {
                 },
                 button: {
                     type: jQuery('#nn_button_type').val(),
-                    style: jQuery('#nn_button_theme').val(),
                     locale: "de-DE",
                     boxSizing: "fill",
                     dimensions: {
