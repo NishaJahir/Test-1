@@ -80,7 +80,6 @@ class NovalnetGooglePayButtonDataProvider
                             'sellerName'    => !empty($sellerName) ? $sellerName : $webstoreHelper->getCurrentWebstoreConfiguration()->name,
                             'enforce'       => $settingsService->getPaymentSettingsValue('enforce', 'novalnet_googlepay'),
                             'buttonType'    => $settingsService->getPaymentSettingsValue('button_type', 'novalnet_googlepay'),
-                            'buttonTheme'   => $settingsService->getPaymentSettingsValue('button_theme', 'novalnet_googlepay'),
                             'buttonHeight'  => $settingsService->getPaymentSettingsValue('button_height', 'novalnet_googlepay'),
                             'testMode'      => ($settingsService->getPaymentSettingsValue('test_mode', 'novalnet_googlepay') == true) ? 'SANDBOX' : 'PRODUCTION'
                          ];
