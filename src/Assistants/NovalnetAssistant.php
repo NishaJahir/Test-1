@@ -632,28 +632,6 @@ class NovalnetAssistant extends WizardProvider
                                     'listBoxValues' => $this->listGooglePayButtonTypes()
                                    ]
             ],
-            'novalnetGooglepayButtonTheme' =>
-            [
-                'type'          => 'select',
-                'defaultValue'  => 'default',
-                'options'       => [
-                                   'name'           => 'NovalnetAssistant.novalnetGooglepayButtonThemeLabel',
-                                   'listBoxValues'  => [
-                                        [
-                                        'caption'   => 'NovalnetAssistant.novalnetGooglepayButtonDefaultThemeLabel',
-                                        'value'     => 'default'
-                                        ],
-                                        [
-                                        'caption'   => 'NovalnetAssistant.novalnetGooglepayButtonWhiteThemeLabel',
-                                        'value'     => 'white'
-                                        ],
-                                        [
-                                        'caption'   => 'NovalnetAssistant.novalnetGooglepayButtonBlackThemeLabel',
-                                        'value'     => 'black'
-                                        ]
-                                    ]
-                                   ]
-             ],
             'novalnetGooglepayButtonHeight' =>
             [
                   'type'    => 'text',
