@@ -108,7 +108,7 @@ class PaymentController extends Controller
     {
         // Get the initial payment call response
         $paymentResponseData = $this->request->all();
-        $this->getLogger(__METHOD__)->error('redirect_response', $paymentResponseData);
+        
         // Checksum validation for redirects
         if(!empty($paymentResponseData['tid'])) {
             if($paymentResponseData['status'] == 'SUCCESS') {
@@ -123,6 +123,7 @@ class PaymentController extends Controller
 
                 // Retrieve the full payment response
                 $paymentResponseData = $this->paymentService->getFullTxnResponse($paymentResponseData);
+                 $this->getLogger(__METHOD__)->error('redirect_response', $paymentResponseData);
                 $isPaymentSuccess = isset($paymentResponseData['result']['status']) && $paymentResponseData['result']['status'] == 'SUCCESS';
                 if($isPaymentSuccess) {
                     $this->paymentService->pushNotification($paymentResponseData['result']['status_text'], 'success', 100);
