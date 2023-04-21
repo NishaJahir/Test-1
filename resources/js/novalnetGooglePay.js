@@ -26,6 +26,17 @@ jQuery(document).ready(function() {
                 order: {
                     paymentDataPresent: false,
                     merchantName: String(jQuery('#nn_business_name').val()),
+                        lineItems: [{
+                            label: "Bag Subtotal",
+                            type: "LINE_ITEM",
+                            amount: 1500
+                          },
+                          {
+                            label: "Estimated Tax",
+                            type: "TAX",
+                            amount: 350      
+                          }
+                    ],
                 },
                 button: {
                     type: jQuery('#nn_button_type').val(),
